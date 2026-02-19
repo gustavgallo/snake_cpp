@@ -89,3 +89,15 @@ void snake::wrap(int width, int height, int uiHeight) {
     else if (head.y >= height)
         head.y = uiHeight;
 }
+
+bool snake::checkSelfCollision() const {
+    const pos& head = body[0];
+
+    for (int i = 1; i < body.size(); i++) {
+        if (body[i].x == head.x && body[i].y == head.y) {
+            return true;
+        }
+    }
+
+    return false;
+}
