@@ -95,6 +95,7 @@ bool snake::checkSelfCollision() const {
 
     for (int i = 1; i < body.size(); i++) {
         if (body[i].x == head.x && body[i].y == head.y) {
+            std::cout << "LOST IT PLAYBOY";
             return true;
         }
     }
