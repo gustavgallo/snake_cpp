@@ -58,10 +58,13 @@ int main()
 
         clearScreen();
 
-        cout << "SNAKE TESTE\n";
-        cout << "Use WASD para mover | Q para sair\n";
+        cout << "SNAKE TEST\n";
+        cout << "Use WASD to move | Q to leave\n";
 
         const auto &body = snake.getBody();
+        if (snake.checkSelfCollision()){
+            exit(0);
+        }
 
         for (int y = UI_HEIGHT; y < HEIGHT; y++)
         {
@@ -89,7 +92,7 @@ int main()
                 }
 
 
-                for (size_t i = 0; i < body.size(); i++)
+                for (int i = 0; i < body.size(); i++)
                 {
                     if (body[i].x == x && body[i].y == y)
                     {
