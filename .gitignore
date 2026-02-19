@@ -1,0 +1,21 @@
+# Executáveis
+*.exe
+*.out
+
+# Objetos
+*.o
+*.obj
+
+# Arquivos temporários
+*.log
+*.tmp
+
+# Pastas de build
+build/
+bin/
+
+# VSCode
+.vscode/
+
+# Arquivos do Windows
+Thumbs.db
