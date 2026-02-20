@@ -86,7 +86,7 @@ void drawGameOver()
     {
         for (int x = 0; x < WIDTH; x++)
         {
-            // Bordas
+
             if (y == 0 || y == HEIGHT - 1)
             {
                 cout << "_";
@@ -97,18 +97,18 @@ void drawGameOver()
             }
             else
             {
-                // Centralizar texto
+
                 int centerY = HEIGHT / 2;
                 int centerX = (WIDTH / 2) - 5;
 
                 if (y == centerY && x == centerX)
                 {
-                    cout << "GAME OVER";
+                    cout << "GAME OVER BRO";
                     x += 8; // pular o resto da palavra
                 }
                 else if (y == centerY + 2 && x == centerX - 4)
                 {
-                    cout << "Press any key to exit";
+                    cout << "Press ENTER to restart";
                     x += 20;
                 }
                 else
@@ -121,17 +121,62 @@ void drawGameOver()
     }
 }
 
-int main()
+void drawMenu()
 {
-    srand(time(NULL));
 
-    snake snake(WIDTH / 2, HEIGHT / 2);
-    pos apple;
-    createFood(apple);
+    clearScreen();
 
-    while (true)
+    for (int y = 0; y < HEIGHT; y++)
     {
+        for (int x = 0; x < WIDTH; x++)
+        {
 
+            if (y == 0 || y == HEIGHT - 1)
+            {
+                cout << "=";
+            }
+            else if (x == 0 || x == WIDTH - 1)
+            {
+                cout << "|";
+            }
+            else
+            {
+
+                int centerY = HEIGHT / 2;
+                int centerX = (WIDTH / 2) - 5;
+
+                if (y == centerY - 3 && x == centerX - 7)
+                {
+                    cout << "WELCOME TO THE SNAKE GAME";
+                    x += 24; // tal da gambiarra
+                }
+                else if (y == centerY - 1 && x == centerX - 5)
+                {
+                    cout << "Made by Gustavo Gallo";
+                    x += 20;
+                }
+                else if (y == centerY + 1 && x == centerX - 4)
+                {
+                    cout << "Press ENTER to start ";
+                    x += 20;
+                }
+                else
+                {
+                    cout << " ";
+                }
+            }
+        }
+        cout << endl;
+    }
+    char tmp;
+    cin >> tmp;
+}
+
+void startGame(snake &snake, pos &apple)
+{
+
+    while (1)
+    {
         getInput(snake);
 
         snake.move();
@@ -147,16 +192,14 @@ int main()
 
         clearScreen();
 
-        cout << "SNAKE TEST\n";
-        // cout << "Use WASD to move | Q to leave\n";
+        cout << "Use WASD to move | Q to leave\n";
         cout << "Apple: " << apple.x << " " << apple.y << endl;
 
         const auto &body = snake.getBody();
         if (snake.checkSelfCollision())
         {
-            drawGameOver();
-            cin.get();
-            break;
+            return;
+
         }
 
         // PRINTING STARTS DOWN FROM HERE
@@ -194,6 +237,23 @@ int main()
 
         Sleep(60);
     }
+}
 
+int main()
+{
+    srand(time(NULL));
+
+    snake kobra(WIDTH / 2, HEIGHT / 2);
+    pos apple;
+    createFood(apple);
+
+    while (true)
+    {
+        drawMenu();
+        startGame(kobra,apple);
+        drawGameOver();
+
+        
+    }
     return 0;
 }
