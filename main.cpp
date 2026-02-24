@@ -175,6 +175,7 @@ void drawMenu()
 void startGame(snake &snake, pos &apple)
 {
 
+    int score = 0;
     while (1)
     {
         getInput(snake);
@@ -188,12 +189,13 @@ void startGame(snake &snake, pos &apple)
         {
             snake.grow();
             createFood(apple);
+            score += 10;
         }
 
         clearScreen();
 
         cout << "Use WASD to move | Q to leave\n";
-        cout << "Apple: " << apple.x << " " << apple.y << endl;
+        cout << "SCORE: " << score << endl;
 
         const auto &body = snake.getBody();
         if (snake.checkSelfCollision())
@@ -227,6 +229,7 @@ void startGame(snake &snake, pos &apple)
                 if ((apple.x == x) && (apple.y == y))
                 {
                     cout << '*';
+                    printed = true;
                 }
 
                 if (!printed)
