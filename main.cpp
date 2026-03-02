@@ -1,9 +1,15 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
-#include <conio.h>
-#include <windows.h>
 #include "utils/snake.hpp"
+#ifdef _WIN32
+    #include <conio.h>
+    #include <windows.h>
+#else
+    #include <termios.h>
+    #include <unistd.h>
+    #include <fcntl.h>
+#endif
 
 using namespace std;
 
@@ -11,12 +17,49 @@ const int WIDTH = 35;
 const int HEIGHT = 20;
 const int UI_HEIGHT = 3;
 
-void clearScreen()
+void sleepMs(int ms)
 {
 #ifdef _WIN32
-    system("cls");
+    Sleep(ms);
 #else
-    system("clear");
+    usleep(ms * 1000);
+#endif
+}
+
+void clearScreen()
+{
+
+
+    cout << "\033[2J\033[1;1H";
+
+
+}
+
+char getChar()
+{
+#ifdef _WIN32
+    if (_kbhit())
+        return _getch();
+    return 0;
+#else
+    char ch = 0;
+    struct termios oldt, newt;
+
+    tcgetattr(STDIN_FILENO, &oldt);
+    newt = oldt;
+
+    newt.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+
+    int oldf = fcntl(STDIN_FILENO, F_GETFL, 0);
+    fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK);
+
+    read(STDIN_FILENO, &ch, 1);
+
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+    fcntl(STDIN_FILENO, F_SETFL, oldf);
+
+    return ch;
 #endif
 }
 
@@ -30,28 +73,17 @@ void createFood(pos &food)
     food.y = posY;
 }
 
-void getInput(snake &snake)
+void getInput(snake& snake)
 {
-    if (_kbhit())
+    char key = getChar();
+
+    switch (key)
     {
-        char c = _getch();
-        switch (c)
-        {
-        case 'w':
-            snake.changeDirection(UP);
-            break;
-        case 's':
-            snake.changeDirection(DOWN);
-            break;
-        case 'a':
-            snake.changeDirection(LEFT);
-            break;
-        case 'd':
-            snake.changeDirection(RIGHT);
-            break;
-        case 'q':
-            exit(0);
-        }
+        case 'w': snake.changeDirection(UP); break;
+        case 's': snake.changeDirection(DOWN); break;
+        case 'a': snake.changeDirection(LEFT); break;
+        case 'd': snake.changeDirection(RIGHT); break;
+        case 'q': exit(0);
     }
 }
 
@@ -81,6 +113,7 @@ bool drawBorders(int x, int y)
 void drawGameOver()
 {
     clearScreen();
+
 
     for (int y = 0; y < HEIGHT; y++)
     {
@@ -152,7 +185,7 @@ void drawMenu()
                 }
                 else if (y == centerY - 1 && x == centerX - 5)
                 {
-                    cout << "Made by Gustavo Gallo";
+                    cout << "Made by F R I E N D S";
                     x += 20;
                 }
                 else if (y == centerY + 1 && x == centerX - 4)
@@ -238,13 +271,15 @@ void startGame(snake &snake, pos &apple)
             cout << endl;
         }
 
-        Sleep(60);
+        sleepMs(60); 
     }
 }
 
 int main()
 {
     srand(time(NULL));
+    
+   
 
     snake kobra(WIDTH / 2, HEIGHT / 2);
     pos apple;
@@ -258,5 +293,7 @@ int main()
 
         
     }
+    
+
     return 0;
 }
